@@ -189,7 +189,7 @@ The project culminates in an interactive web application, built using Streamlit,
 ### Accessibility
 
 - **Web-Based Platform**: Being web-based, the app is accessible from any device with internet access, requiring no additional software installation.
-- **Live Version**: The deployed model is hosted online, and users can access it [here.](#)
+- **Live Version**: The deployed model is hosted online, and users can access it [here.](https://deb-eight.streamlit.app/)
 
 
 <a name="conclusion"></a>
