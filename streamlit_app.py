@@ -40,7 +40,7 @@ def set_bg_hack_url():
 set_bg_hack_url()
 
 # Adding headings to the webpage
-st.markdown("# 🎣 Clickbait Headline Detector 🔍")
+st.markdown("# Deb8 🎣⚔️")
 st.markdown("This interactive dashboard is designed to assess any article"
             " headline and determine if they are clickbait or not. To evaluate"
             " a headline, simply enter it in the space provided below and click"
