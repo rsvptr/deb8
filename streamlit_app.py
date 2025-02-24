@@ -39,7 +39,7 @@ def set_bg_hack_url():
          """
          <style>
          .stApp {
-             background: url("https://images.unsplash.com/photo-1656427833582-b276ee575f16?q=80");
+             background: url("https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?q=80");
              background-size: cover;
          }
          </style>
