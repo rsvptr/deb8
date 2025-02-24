@@ -10,7 +10,7 @@ import string
 import warnings
 
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize  # Imported but not directly used here
+# from nltk.tokenize import word_tokenize  # (if needed later)
 from nltk.probability import FreqDist
 from nltk.stem import PorterStemmer
 
@@ -19,9 +19,16 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, Tf
 
 warnings.filterwarnings('ignore')
 
-# Download necessary NLTK data
-nltk.download('stopwords', quiet=True)
-nltk.download('punkt', quiet=True)
+# Ensure necessary NLTK data is available
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords', quiet=True)
+
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt', quiet=True)
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Deb8: Clickbait Detector", layout="centered")
@@ -51,11 +58,11 @@ st.markdown("This interactive dashboard is designed to assess any article headli
 with open('Model and Vectorizer/naive-bayes_model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
 
-# Load stopwords list
-stopwords_list = stopwords.words('english')
-
 with open('Model and Vectorizer/tf-idf_vectorizer.pkl', 'rb') as vec_file:
     vectorizer = pickle.load(vec_file)
+
+# Load stopwords list
+stopwords_list = stopwords.words('english')
 
 # Define functions for text preprocessing and feature engineering
 def clean_text_round1(text):
@@ -68,7 +75,7 @@ def clean_text_round1(text):
     text = re.sub('  ', ' ', text)
     text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
     text = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', text)
-    text = re.sub('\[.*?\]', ' ', text)
+    text = re.sub(r'\[.*?\]', ' ', text)  # Use a raw string to avoid escape issues
     text = re.sub('[%s]' % re.escape(string.punctuation), '', text)
     text = re.sub('“', '', text)
     text = re.sub('”', '', text)
