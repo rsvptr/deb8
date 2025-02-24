@@ -10,7 +10,7 @@ import string
 import warnings
 
 from nltk.corpus import stopwords
-# from nltk.tokenize import word_tokenize  # (if needed later)
+# from nltk.tokenize import word_tokenize  # Uncomment if needed later
 from nltk.probability import FreqDist
 from nltk.stem import PorterStemmer
 
@@ -54,12 +54,17 @@ set_bg_hack_url()
 st.markdown("# Deb8 🎣⚔️")
 st.markdown("This interactive dashboard is designed to assess any article headline and determine if it is clickbait or not. To evaluate a headline, simply enter it below and click 'Submit'.")
 
-# Load the pre-trained model and the TF-IDF vectorizer using context managers
+# Load the pre-trained model and TF-IDF vectorizer using context managers
 with open('Model and Vectorizer/naive-bayes_model.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
 
 with open('Model and Vectorizer/tf-idf_vectorizer.pkl', 'rb') as vec_file:
     vectorizer = pickle.load(vec_file)
+
+# Check if the vectorizer is fitted
+if not hasattr(vectorizer, 'vocabulary_'):
+    st.error("TF-IDF vectorizer is not fitted. Please re-run your training notebook to save a fitted vectorizer.")
+    st.stop()
 
 # Load stopwords list
 stopwords_list = stopwords.words('english')
@@ -75,7 +80,7 @@ def clean_text_round1(text):
     text = re.sub('  ', ' ', text)
     text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
     text = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', text)
-    text = re.sub(r'\[.*?\]', ' ', text)  # Use a raw string to avoid escape issues
+    text = re.sub(r'\[.*?\]', ' ', text)  # Use raw string to avoid invalid escape sequence
     text = re.sub('[%s]' % re.escape(string.punctuation), '', text)
     text = re.sub('“', '', text)
     text = re.sub('”', '', text)
@@ -101,7 +106,7 @@ def starts_with_num(headline):
 # Create an area in the Streamlit app for the user to input a headline
 sentence = st.text_area('Enter headline here')
 
-# Processing the submitted headline upon button click
+# Process the submitted headline upon button click
 if st.button('Submit'):
     # Clean and engineer features from the headline
     cleaned_sentence = clean_text_round1(sentence)
@@ -110,7 +115,7 @@ if st.button('Submit'):
     exclamation_feature = contains_exclamation(cleaned_sentence)
     starts_with_num_feature = starts_with_num(cleaned_sentence)
     
-    # Transform the cleaned headline using the pre-loaded vectorizer
+    # Transform the cleaned headline using the pre-loaded (and fitted) vectorizer
     input_text = [cleaned_sentence]
     vectorized = vectorizer.transform(input_text)
     
@@ -121,7 +126,7 @@ if st.button('Submit'):
     # Combine numeric features with the TF-IDF features
     final_features = sparse.hstack([numeric_sparse, vectorized])
     
-    # Predict using the loaded model
+    # Use the model to predict and display the result
     result = model.predict(final_features)
     if result == 1:
         st.error('🚨 Alert: Clickbait Detected! 🚨 This headline appears to be crafted to lure clicks. Proceed with caution.')
