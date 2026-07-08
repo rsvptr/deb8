@@ -119,7 +119,7 @@ st.markdown(
     .hero-logo {
         width: 104px !important;
         height: 104px !important;
-        border-radius: 26px;
+        border-radius: 20px;
         box-shadow: 0 14px 44px rgba(240, 176, 41, 0.16), 0 4px 16px rgba(0, 0, 0, 0.4);
         margin-bottom: 1rem;
         display: block;
